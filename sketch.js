@@ -118,7 +118,7 @@ function naturalSelection(){
 	}
 	pool.sort(compare);
 	for(var i=0;i<populationSize;i++){
-		var rand=floor(random(0,pool.length));
+		var rand=floor(random(0,pool.length/2));
 		var parent=pool[rand];
 		var child=crossover(parent);
 		population[i]=child;		
@@ -196,7 +196,8 @@ function draw(){
 				population[i].deadbyobstacle=true;
 			}
 			// console.log(population);
-			rect(population[i].pos.x+=population[i].gene[step].x,population[i].pos.y+=population[i].gene[step].y,10,10)
+			else
+				rect(population[i].pos.x+=population[i].gene[step].x,population[i].pos.y+=population[i].gene[step].y,10,10)
 		}
 	}
 	step++;
