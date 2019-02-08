@@ -196,7 +196,8 @@ function draw(){
 				population[i].deadbyobstacle=true;
 			}
 			// console.log(population);
-			rect(population[i].pos.x+=population[i].gene[step].x,population[i].pos.y+=population[i].gene[step].y,10,10)
+			else
+				rect(population[i].pos.x+=population[i].gene[step].x,population[i].pos.y+=population[i].gene[step].y,10,10)
 		}
 	}
 	step++;
