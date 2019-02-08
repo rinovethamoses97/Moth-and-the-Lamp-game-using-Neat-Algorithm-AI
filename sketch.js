@@ -118,7 +118,7 @@ function naturalSelection(){
 	}
 	pool.sort(compare);
 	for(var i=0;i<populationSize;i++){
-		var rand=floor(random(0,pool.length));
+		var rand=floor(random(0,pool.length/2));
 		var parent=pool[rand];
 		var child=crossover(parent);
 		population[i]=child;		
