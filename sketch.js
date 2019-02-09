@@ -90,7 +90,14 @@ function crossover(parent){
 		child.gene[i].y=parent.gene[i].y;
 	}
 	child.brain=parent.brain.copy();
-	child.brain.mutate()
+	child.brain.mutate();
+	// mutating child gene
+	for(var i=0;i<lifetime;i++){
+		if(random(1)<mutationRate){
+			child.gene[i].x=random(-8,8);
+			child.gene[i].y=random(-8,8);
+		}
+	}
 	return child;
 }
 // function mutate(child){
@@ -111,14 +118,15 @@ function compare(a,b){
 }
 function naturalSelection(){
 	pool=[];
-	for(var i=0;i<populationSize;i++){
+	population.sort(compare);
+	for(var i=0;i<populationSize/2;i++){
 		var score=floor(population[i].fitness*100000);
 		for(var j=0;j<score;j++)
 			pool.push(population[i]);
 	}
 	pool.sort(compare);
 	for(var i=0;i<populationSize;i++){
-		var rand=floor(random(0,pool.length));
+		var rand=floor(random(0,pool.length/2));
 		var parent=pool[rand];
 		var child=crossover(parent);
 		population[i]=child;		
@@ -157,7 +165,6 @@ function think(population){
 	return outputs;
 }
 function draw(){
-	
 	background(0);
 	fill(0,0,255);
 	rect(obstacle.x,obstacle.y,600,10);
@@ -169,26 +176,26 @@ function draw(){
 			var outputs=think(population[i]);
 			if(outputs[0]>0.5){
 				var temp=new Object();
-				temp.x=2;
+				temp.x=random(0,8);
 				temp.y=0;
 				population[i].gene.push(temp);
 			}
 			else{
 				var temp=new Object();
-				temp.x=-2;
+				temp.x=random(-8,0);
 				temp.y=0;
 				population[i].gene.push(temp);	
 			}
 			if(outputs[1]>0.5){
 				var temp=new Object();
 				temp.x=0;
-				temp.y=2;
+				temp.y=random(0,8);
 				population[i].gene.push(temp);
 			}
 			else{
 				var temp=new Object();
 				temp.x=0;
-				temp.y=-2;
+				temp.y=random(-8,0);
 				population[i].gene.push(temp);
 			}
 			if(population[i].pos.x+population[i].gene[step].x<0 ||population[i].pos.x+population[i].gene[step].x>790 ||population[i].pos.y+population[i].gene[step].y>590|| population[i].pos.y+population[i].gene[step].y<0||collideRectRect(population[i].pos.x+population[i].gene[step].x,population[i].pos.y+population[i].gene[step].y,10,10,obstacle.x,obstacle.y,600,10)){
@@ -196,7 +203,8 @@ function draw(){
 				population[i].deadbyobstacle=true;
 			}
 			// console.log(population);
-			rect(population[i].pos.x+=population[i].gene[step].x,population[i].pos.y+=population[i].gene[step].y,10,10)
+			else
+				rect(population[i].pos.x+=population[i].gene[step].x,population[i].pos.y+=population[i].gene[step].y,10,10)
 		}
 	}
 	step++;
