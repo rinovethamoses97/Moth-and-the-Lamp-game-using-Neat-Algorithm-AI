@@ -29,8 +29,8 @@ function setup(){
 		population[i].brain=new NeuralNetwork(4,6,2);
 		for(var j=0;j<lifetime;j++){
 			population[i].gene[j]=new Object();
-			population[i].gene[j].x=random(-2,2)
-			population[i].gene[j].y=random(-2,2);
+			population[i].gene[j].x=random(-8,8)
+			population[i].gene[j].y=random(-8,8);
 		}
 
 	}
@@ -94,13 +94,8 @@ function crossover(parent){
 	// mutating child gene
 	for(var i=0;i<lifetime;i++){
 		if(random(1)<mutationRate){
-<<<<<<< HEAD
 			child.gene[i].x=random(-8,8);
 			child.gene[i].y=random(-8,8);
-=======
-			child.gene[i].x=random(-2,2);
-			child.gene[i].y=random(-2,2);
->>>>>>> 41a908eb41f3bc7c4ed9ea60abdf31620f1aaf75
 		}
 	}
 	return child;
@@ -246,8 +241,8 @@ function draw(){
 			for(var i=0;i<populationSize;i++){	
 				for(var j=lifetime;j<lifetime+15;j++){
 					population[i].gene[j]=new Object();
-					population[i].gene[j].x=random(-2,2);
-					population[i].gene[j].y=random(-2,2);
+					population[i].gene[j].x=random(-8,8);
+					population[i].gene[j].y=random(-8,8);
 				}	
 			}
 			lifetime+=15;
