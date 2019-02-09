@@ -75,7 +75,7 @@ function findbest(){
 	bestPopulation=temp_population;
 	bestScore=temp_score;
 }
-function crossover(parent){
+function crossover(parenta,parentb){
 	var child=new Object();
 	child.dead=false;
 	child.deadbyobstacle=false;
@@ -84,12 +84,25 @@ function crossover(parent){
 	child.pos.x=400;
 	child.pos.y=580;
 	child.gene=[];
-	for(var i=0;i<parent.gene.length;i++){
+	var midpoint=floor(parenta.gene.length/2);
+	for(var i=0;i<parenta.gene.length;i++){
 		child.gene[i]=new Object();
-		child.gene[i].x=parent.gene[i].x;
-		child.gene[i].y=parent.gene[i].y;
+		if(i>midpoint){
+			child.gene[i].x=parenta.gene[i].x;
+			child.gene[i].y=parentb.gene[i].y;
+		}
+		else{
+			child.gene[i].x=parenta.gene[i].x;
+			child.gene[i].y=parentb.gene[i].y;
+		}
 	}
-	child.brain=parent.brain.copy();
+	if(parenta.fitness>parentb.fitness){
+		child.brain=parenta.brain.copy();
+	}
+	else{
+		child.brain=parentb.brain.copy();
+	}
+	// mutating the current neural network
 	child.brain.mutate();
 	// mutating child gene
 	for(var i=0;i<lifetime;i++){
@@ -100,15 +113,6 @@ function crossover(parent){
 	}
 	return child;
 }
-// function mutate(child){
-// 	for(var i=0;i<lifetime;i++){
-// 		if(random(1)<mutationRate){
-// 			child.gene[i].x=random(-2,2);
-// 			child.gene[i].y=random(-2,2);
-// 		}
-// 	}
-// 	return child;
-// }
 function compare(a,b){
 	if (a.fitness > b.fitness)
      	return -1;
@@ -127,21 +131,13 @@ function naturalSelection(){
 	pool.sort(compare);
 	for(var i=0;i<populationSize;i++){
 		var rand=floor(random(0,pool.length/2));
-		var parent=pool[rand];
-		var child=crossover(parent);
+		var parenta=pool[rand];
+		var rand=floor(random(0,pool.length/2));
+		var parentb=pool[rand];
+		var child=crossover(parenta,parentb);
 		population[i]=child;		
 	}
 }
-// Replaced by p5.js collision detection libarary
-// function collisioncheck(x,y){
-// 	if((x+(10)>=obstacle.x && x+(10)<=obstacle.x+(600)) && (y+(10)>=obstacle.y && y+(10)<=obstacle.y+(10))){
-//     	return true;
-//     }
-//     else if((x>=obstacle.x && x<=obstacle.x+(600))&&(y>=obstacle.y && y<=obstacle.y+(10))){
-//     	return true;
-//     }
-//     return false;
-// }
 function think(population){
 	var inputs=[];
 	var temp_x=(population.pos.x-0)/(800-0);
@@ -202,7 +198,6 @@ function draw(){
 				population[i].dead=true;
 				population[i].deadbyobstacle=true;
 			}
-			// console.log(population);
 			else
 				rect(population[i].pos.x+=population[i].gene[step].x,population[i].pos.y+=population[i].gene[step].y,10,10)
 		}
