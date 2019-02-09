@@ -10,12 +10,16 @@ var mutationRate=0.01;
 var bestPopulation;
 var bestScore=0;
 var gamestatus=0;
+var speed=8;
+var lifetimeincreasecount=15;
 function setup(){
 	createCanvas(800,600);
 	background(0);
-	target.x=700;
-	target.y=height/2;
-	obstacle.x=0;
+	// target.x=700;
+	// target.y=height/2;
+	target.x=width/2+300;
+	target.y=10;
+	obstacle.x=240;
 	obstacle.y=height/2;
 	for(var i=0;i<populationSize;i++){
 		population[i]=new Object();
@@ -29,8 +33,8 @@ function setup(){
 		population[i].brain=new NeuralNetwork(4,6,2);
 		for(var j=0;j<lifetime;j++){
 			population[i].gene[j]=new Object();
-			population[i].gene[j].x=random(-8,8)
-			population[i].gene[j].y=random(-8,8);
+			population[i].gene[j].x=random(-speed,speed)
+			population[i].gene[j].y=random(-speed,speed);
 		}
 
 	}
@@ -56,7 +60,7 @@ function manhattan(x1,y1,x2,y2){
 function calculateFitness(){
 	for(var i=0;i<populationSize;i++){
 		if(population[i].deadbyobstacle){
-			population[i].fitness=0.09*(1/dist(population[i].pos.x,population[i].pos.y,target.x,target.y));
+			population[i].fitness=0;
 		}
 		else{
 			population[i].fitness=1/dist(population[i].pos.x,population[i].pos.y,target.x,target.y);
@@ -107,8 +111,8 @@ function crossover(parenta,parentb){
 	// mutating child gene
 	for(var i=0;i<lifetime;i++){
 		if(random(1)<mutationRate){
-			child.gene[i].x=random(-8,8);
-			child.gene[i].y=random(-8,8);
+			child.gene[i].x=random(-speed,speed);
+			child.gene[i].y=random(-speed,speed);
 		}
 	}
 	return child;
@@ -144,10 +148,10 @@ function think(population){
 	var temp_y=(population.pos.y-0)/(800-0);
 	var temp_dist_to_target=1/(dist(population.pos.x,population.pos.y,target.x,target.y));
 	var temp_dist_to_obstacle;
-	if(population.pos.x>=0 && population.pos.x<=600 && target.x==700){
+	if(population.pos.x>=240 && population.pos.x<=640 && population.pos.y>=(height/2)+10){
 		temp_dist_to_obstacle=1/dist(population.pos.x,population.pos.y,population.pos.x,obstacle.y+10);
 	}
-	else if(target.x==700){
+	else if(population.pos.y>=(height/2)+10){
 		temp_dist_to_obstacle=0.95;	
 	}
 	else{
@@ -163,38 +167,38 @@ function think(population){
 function draw(){
 	background(0);
 	fill(0,0,255);
-	rect(obstacle.x,obstacle.y,600,10);
+	rect(obstacle.x,obstacle.y,300,10);
 	fill(0,255,0);
 	rect(target.x,target.y,10,10);
-	fill(255,0,0);
+	fill(255,100,0);
 	for(var i=0;i<populationSize;i++){
 		if(!population[i].dead){
 			var outputs=think(population[i]);
 			if(outputs[0]>0.5){
 				var temp=new Object();
-				temp.x=random(0,8);
+				temp.x=random(0,speed);
 				temp.y=0;
 				population[i].gene.push(temp);
 			}
 			else{
 				var temp=new Object();
-				temp.x=random(-8,0);
+				temp.x=random(-speed,0);
 				temp.y=0;
 				population[i].gene.push(temp);	
 			}
 			if(outputs[1]>0.5){
 				var temp=new Object();
 				temp.x=0;
-				temp.y=random(0,8);
+				temp.y=random(0,speed);
 				population[i].gene.push(temp);
 			}
 			else{
 				var temp=new Object();
 				temp.x=0;
-				temp.y=random(-8,0);
+				temp.y=random(-speed,0);
 				population[i].gene.push(temp);
 			}
-			if(population[i].pos.x+population[i].gene[step].x<0 ||population[i].pos.x+population[i].gene[step].x>790 ||population[i].pos.y+population[i].gene[step].y>590|| population[i].pos.y+population[i].gene[step].y<0||collideRectRect(population[i].pos.x+population[i].gene[step].x,population[i].pos.y+population[i].gene[step].y,10,10,obstacle.x,obstacle.y,600,10)){
+			if(population[i].pos.x+population[i].gene[step].x<0 ||population[i].pos.x+population[i].gene[step].x>790 ||population[i].pos.y+population[i].gene[step].y>590|| population[i].pos.y+population[i].gene[step].y<0||collideRectRect(population[i].pos.x+population[i].gene[step].x,population[i].pos.y+population[i].gene[step].y,10,10,obstacle.x,obstacle.y,300,10)){
 				population[i].dead=true;
 				population[i].deadbyobstacle=true;
 			}
@@ -212,35 +216,36 @@ function draw(){
 	if(evaluate()){
 		if(gamestatus==0){
 			gamestatus=1;
-			target.x=width/2;
-			target.y=10;
+			// target.x=width/2;
+			// target.y=10;
 		}
-		else if(gamestatus==1){
-			gamestatus=2;
-		}
+		// else if(gamestatus==1){
+		// 	gamestatus=2;
+		// }
 	}
 	fill(255);
 	text("Best Score= "+bestScore,0,10);
 	text("Generations= "+generations,0,30);
-	if(gamestatus==2){
+	text("speed= "+speed,0,50);
+	if(gamestatus==1){
 		fill(0,255,0);
-		text("Won",0,50);
+		text("Won",0,70);
 	}
 	if(alldead()){
 		generations++;
 		calculateFitness();	
 		findbest();
-		console.log("Best Score= "+bestScore);
+		// console.log("Best Score= "+bestScore);
 		naturalSelection();
 		if(generations%2==0){
 			for(var i=0;i<populationSize;i++){	
-				for(var j=lifetime;j<lifetime+15;j++){
+				for(var j=lifetime;j<lifetime+lifetimeincreasecount;j++){
 					population[i].gene[j]=new Object();
-					population[i].gene[j].x=random(-8,8);
-					population[i].gene[j].y=random(-8,8);
+					population[i].gene[j].x=random(-speed,speed);
+					population[i].gene[j].y=random(-speed,speed);
 				}	
 			}
-			lifetime+=15;
+			lifetime+=lifetimeincreasecount;
 		}
 	}
 

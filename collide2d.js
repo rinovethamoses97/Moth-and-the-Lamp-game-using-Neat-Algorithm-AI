@@ -5,7 +5,7 @@ Some functions and code modified version from http://www.jeffreythompson.org/col
 Version 0.6 | Nov 28th, 2018
 CC BY-NC-SA 4.0
 */
-console.log("### p5.collide ###")
+// console.log("### p5.collide ###")
 
 p5.prototype._collideDebug = false;
 
