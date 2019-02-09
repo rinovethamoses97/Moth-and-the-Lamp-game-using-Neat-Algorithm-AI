@@ -60,7 +60,7 @@ function manhattan(x1,y1,x2,y2){
 function calculateFitness(){
 	for(var i=0;i<populationSize;i++){
 		if(population[i].deadbyobstacle){
-			population[i].fitness=0;
+			population[i].fitness=0.00005;
 		}
 		else{
 			population[i].fitness=1/dist(population[i].pos.x,population[i].pos.y,target.x,target.y);
