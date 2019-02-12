@@ -263,22 +263,22 @@ function draw(){
 			// 	population[i].deadbyobstacle=true;
 			// }
 			else if(collideRectRect(population[i].pos.x+population[i].gene[step].x,population[i].pos.y+population[i].gene[step].y,10,10,dynamicObstacle.pos.x+dynamicObstacle.velocity,dynamicObstacle.pos.y,30,30)){
-				console.log("hit");
+				// console.log("hit");
 				population[i].dead=true;
 				population[i].deadbyobstacle=true;
 			}
 			else if(collideRectRect(population[i].pos.x+population[i].gene[step].x,population[i].pos.y+population[i].gene[step].y,10,10,dynamicObstacle1.pos.x+dynamicObstacle1.velocity,dynamicObstacle1.pos.y,30,30)){
-				console.log("hit")
+				// console.log("hit")
 				population[i].dead=true;
 				population[i].deadbyobstacle=true;
 			}
 			else if(collideRectRect(population[i].pos.x+population[i].gene[step].x,population[i].pos.y+population[i].gene[step].y,10,10,dynamicObstacle2.pos.x+dynamicObstacle2.velocity,dynamicObstacle2.pos.y,30,30)){
-				console.log("hit")
+				// console.log("hit")
 				population[i].dead=true;
 				population[i].deadbyobstacle=true;
 			}
 			else if(collideRectRect(population[i].pos.x+population[i].gene[step].x,population[i].pos.y+population[i].gene[step].y,10,10,dynamicObstacle3.pos.x+dynamicObstacle3.velocity,dynamicObstacle3.pos.y,30,30)){
-				console.log("hit")
+				// console.log("hit")
 				population[i].dead=true;
 				population[i].deadbyobstacle=true;
 			}
