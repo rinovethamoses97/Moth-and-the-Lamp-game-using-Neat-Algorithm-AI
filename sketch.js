@@ -1,3 +1,6 @@
+var inputnodes=[];
+var hiddennodes=[];
+var outputnodes=[];
 var populationSize=150;
 var population=[];
 var target=new Object();
@@ -60,6 +63,21 @@ function setup(){
 			population[i].gene[j].y=random(-speed,speed);
 		}
 
+	}
+	var temp=200;
+	for(var i=0;i<6;i++){
+		inputnodes[i]=new node(250,temp,10,10);
+		temp+=50;
+	}
+	temp=175;
+	for(var i=0;i<7;i++){
+		hiddennodes[i]=new node(470,temp,10,10);
+		temp+=50;
+	}
+	temp=300;
+	for(var i=0;i<2;i++){
+		outputnodes[i]=new node(660,temp,10,10);
+		temp+=50;
 	}
 }
 function alldead(){
@@ -205,7 +223,7 @@ function think(population){
 	return outputs;
 }
 function draw(){
-	frameRate(15);
+	frameRate(20);
 	background(0);
 	fill(0,0,255);
 	// rect(obstacle.x,obstacle.y,300,10);
@@ -323,6 +341,8 @@ function draw(){
 		}
 		gamestatus=0;
 	}
+	calculateFitness();
+	findbest();
 	if(alldead()){
 		generations++;
 		dynamicObstacle.pos.x=0;
@@ -333,8 +353,7 @@ function draw(){
 		dynamicObstacle2.pos.y=340;
 		dynamicObstacle3.pos.x=770;
 		dynamicObstacle3.pos.y=440;
-		calculateFitness();	
-		findbest();
+		// calculateFitness();	
 		// console.log("Best Score= "+bestScore);
 		naturalSelection();
 		if(generations%2==0){
@@ -348,4 +367,29 @@ function draw(){
 			lifetime+=lifetimeincreasecount;
 		}
 	}
+	displayNeuralNetwork();
+}
+function displayNeuralNetwork(){
+	for(var i=0;i<inputnodes.length;i++)
+		inputnodes[i].show();
+	for(var i=0;i<hiddennodes.length;i++){
+		hiddennodes[i].show();
+		for(var j=0;j<inputnodes.length;j++){
+			stroke(255);
+			var temp_weight_value=map(bestPopulation.brain.wih.matrix[i][j],-1,1,1,4);
+			strokeWeight(temp_weight_value);
+			line(hiddennodes[i].x,hiddennodes[i].y,inputnodes[j].x,inputnodes[j].y);
+		}
+	}
+	for(var i=0;i<outputnodes.length;i++){
+		outputnodes[i].show();
+		for(var j=0;j<hiddennodes.length;j++){
+			stroke(255);
+			var temp_weight_value=map(bestPopulation.brain.who.matrix[i][j],-1,1,1,4);
+			strokeWeight(temp_weight_value);
+			line(outputnodes[i].x,outputnodes[i].y,hiddennodes[j].x,hiddennodes[j].y);
+		}
+	}
+	stroke(0);
+	strokeWeight(1);
 }
