@@ -289,13 +289,13 @@ function draw(){
 			}
 		}
 	}
-	if(step==lifetime-1){
+	step++;
+	if(step==lifetime){
 		step=0;
 		for(var i=0;i<populationSize;i++){
 			population[i].dead=true;
 		}
 	}
-	step++;
 	var temp=evaluate();
 	if(temp[0]){
 		if(gamestatus==0){
