@@ -1,4 +1,4 @@
-var populationSize=100;
+var populationSize=200;
 var population=[];
 var target=new Object();
 var obstacle=new Object();
@@ -10,27 +10,38 @@ var mutationRate=0.01;
 var bestPopulation;
 var bestScore=0;
 var gamestatus=0;
-var speed=8;
+var speed=5;
 var lifetimeincreasecount=15;
+var wincount=0;
 var dynamicObstacle=new Object();
 dynamicObstacle.pos=new Object();
 dynamicObstacle.pos.x=0;
-dynamicObstacle.pos.y=100;
+dynamicObstacle.pos.y=140;
 dynamicObstacle.velocity=8;
 var dynamicObstacle1=new Object();
 dynamicObstacle1.pos=new Object();
 dynamicObstacle1.pos.x=770;
-dynamicObstacle1.pos.y=160;
+dynamicObstacle1.pos.y=240;
 dynamicObstacle1.velocity=8;
+var dynamicObstacle2=new Object();
+dynamicObstacle2.pos=new Object();
+dynamicObstacle2.pos.x=0;
+dynamicObstacle2.pos.y=340;
+dynamicObstacle2.velocity=8;
+var dynamicObstacle3=new Object();
+dynamicObstacle3.pos=new Object();
+dynamicObstacle3.pos.x=770;
+dynamicObstacle3.pos.y=440;
+dynamicObstacle3.velocity=8;
 function setup(){
 	createCanvas(800,600);
 	background(0);
-	target.x=700;
-	target.y=height/2;
-	// target.x=width/2+300;
-	// target.y=10;
-	obstacle.x=240;
-	obstacle.y=height/2;
+	// target.x=700;
+	// target.y=height/2;
+	target.x=width/2;
+	target.y=10;
+	// obstacle.x=240;
+	// obstacle.y=height/2;
 	for(var i=0;i<populationSize;i++){
 		population[i]=new Object();
 		population[i].fitness=0;
@@ -40,6 +51,7 @@ function setup(){
 		population[i].pos.y=580;
 		population[i].dead=false;
 		population[i].deadbyobstacle=false;
+		population[i].won=false;
 		population[i].brain=new NeuralNetwork(5,7,2);
 		for(var j=0;j<lifetime;j++){
 			population[i].gene[j]=new Object();
@@ -57,12 +69,18 @@ function alldead(){
 	return true;
 }
 function evaluate(){
+	var count=0;
 	for(var i=0;i<populationSize;i++){
-		if(collideRectRect(population[i].pos.x,population[i].pos.y,10,10,target.x,target.y,10,10)){
-			return true;
+		if(collideRectRect(population[i].pos.x,population[i].pos.y,10,10,target.x,target.y,80,80)){
+			count++;
 		}		
 	}
-	return false;
+	if(count==0){
+		return [false,count];
+	}
+	else{
+		return [true,count];
+	}
 }
 function manhattan(x1,y1,x2,y2){
 	return (abs(x2-x1)+abs(y2-y1));
@@ -73,7 +91,11 @@ function calculateFitness(){
 			population[i].fitness=0.0000001;
 		}
 		else{
-			population[i].fitness=1/dist(population[i].pos.x,population[i].pos.y,target.x,target.y);
+			if(population[i].won){
+				population[i].fitness=1/dist(population[i].pos.x,population[i].pos.y,target.x+40,target.y+40)*2;
+			}
+			else
+				population[i].fitness=1/dist(population[i].pos.x,population[i].pos.y,target.x+40,target.y+40);
 		}
 	}
 }
@@ -89,7 +111,7 @@ function findbest(){
 	bestPopulation=temp_population;
 	bestScore=temp_score;
 }
-function crossover(parenta,parentb){
+function crossover(parent){
 	var child=new Object();
 	child.dead=false;
 	child.deadbyobstacle=false;
@@ -98,24 +120,24 @@ function crossover(parenta,parentb){
 	child.pos.x=400;
 	child.pos.y=580;
 	child.gene=[];
-	var midpoint=floor(parenta.gene.length/2);
+	// var midpoint=floor(parenta.gene.length/2);
 	for(var i=0;i<lifetime;i++){
 		child.gene[i]=new Object();
-		if(i>midpoint){
-			child.gene[i].x=parenta.gene[i].x;
-			child.gene[i].y=parentb.gene[i].y;
-		}
-		else{
-			child.gene[i].x=parenta.gene[i].x;
-			child.gene[i].y=parentb.gene[i].y;
-		}
+		// if(i>midpoint){
+		// 	child.gene[i].x=parenta.gene[i].x;
+		// 	child.gene[i].y=parentb.gene[i].y;
+		// }
+		// else{
+			child.gene[i].x=parent.gene[i].x;
+			child.gene[i].y=parent.gene[i].y;
+		// }
 	}
-	if(parenta.fitness>parentb.fitness){
-		child.brain=parenta.brain.copy();
-	}
-	else{
-		child.brain=parentb.brain.copy();
-	}
+	// if(parenta.fitness>parentb.fitness){
+		child.brain=parent.brain.copy();
+	// }
+	// else{
+	// 	child.brain=parentb.brain.copy();
+	// }
 	// mutating the current neural network
 	child.brain.mutate();
 	// mutating child gene
@@ -135,20 +157,21 @@ function compare(a,b){
   	return 0;
 }
 function naturalSelection(){
-	pool=[];
-	population.sort(compare);
-	for(var i=0;i<populationSize/2;i++){
-		var score=floor(population[i].fitness*100000);
-		for(var j=0;j<score;j++)
-			pool.push(population[i]);
-	}
+	// pool=[];
+	// population.sort(compare);
+	// for(var i=0;i<populationSize/2;i++){
+	// 	var score=floor(population[i].fitness*100000);
+	// 	for(var j=0;j<score;j++)
+	// 		pool.push(population[i]);
+	// }
 	pool.sort(compare);
 	for(var i=0;i<populationSize;i++){
-		var rand=floor(random(0,pool.length/4));
-		var parenta=pool[rand];
-		var rand=floor(random(0,pool.length/4));
-		var parentb=pool[rand];
-		var child=crossover(parenta,parentb);
+		// var rand=floor(random(0,pool.length/4));
+		// var parent=pool[rand];
+		// var rand=floor(random(0,pool.length/4));
+		// var parentb=pool[rand];
+		// var child=crossover(parenta,parentb);
+		var child=crossover(bestPopulation);
 		population[i]=child;		
 	}
 }
@@ -157,28 +180,30 @@ function think(population){
 	var temp_x=(population.pos.x-0)/(800-0);
 	var temp_y=(population.pos.y-0)/(800-0);
 	var temp_dist_to_target=1/(dist(population.pos.x,population.pos.y,target.x,target.y));
-	var temp_dist_to_obstacle;
-	if(population.pos.x>=240 && population.pos.x<=640 && population.pos.y>=(height/2)+10){
-		temp_dist_to_obstacle=1/dist(population.pos.x,population.pos.y,population.pos.x,obstacle.y+10);
-	}
-	else if(population.pos.y>=(height/2)+10){
-		temp_dist_to_obstacle=0.95;	
-	}
-	else{
-		temp_dist_to_obstacle=1;
-	}
+	// var temp_dist_to_obstacle;
+	// if(population.pos.x>=240 && population.pos.x<=640 && population.pos.y>=(height/2)+10){
+	// 	temp_dist_to_obstacle=1/dist(population.pos.x,population.pos.y,population.pos.x,obstacle.y+10);
+	// }
+	// else if(population.pos.y>=(height/2)+10){
+	// 	temp_dist_to_obstacle=0.95;	
+	// }
+	// else{
+	// 	temp_dist_to_obstacle=1;
+	// }
 	inputs[0]=temp_x;
 	inputs[1]=temp_y;
-	inputs[2]=temp_dist_to_obstacle;
-	inputs[3]=1/dist(population.pos.x,population.pos.y,dynamicObstacle.pos.x,dynamicObstacle.pos.y);
-	inputs[4]=1/dist(population.pos.x,population.pos.y,dynamicObstacle1.pos.x,dynamicObstacle1.pos.y);
+	// inputs[2]=temp_dist_to_obstacle;
+	// inputs[3]=1/dist(population.pos.x,population.pos.y,dynamicObstacle.pos.x,dynamicObstacle.pos.y);
+	inputs[2]=1/dist(population.pos.x,population.pos.y,dynamicObstacle1.pos.x,dynamicObstacle1.pos.y);
+	inputs[3]=1/dist(population.pos.x,population.pos.y,dynamicObstacle2.pos.x,dynamicObstacle2.pos.y);
+	inputs[4]=1/dist(population.pos.x,population.pos.y,dynamicObstacle3.pos.x,dynamicObstacle3.pos.y);
 	var outputs=population.brain.query(inputs);
 	return outputs;
 }
 function draw(){
 	background(0);
 	fill(0,0,255);
-	rect(obstacle.x,obstacle.y,300,10);
+	// rect(obstacle.x,obstacle.y,300,10);
 	rect(dynamicObstacle.pos.x,dynamicObstacle.pos.y,30,30);
 	if(dynamicObstacle.pos.x+dynamicObstacle.velocity+30>=800 || dynamicObstacle.pos.x+dynamicObstacle.velocity<=0)
 		dynamicObstacle.velocity*=-1;
@@ -187,9 +212,16 @@ function draw(){
 	if(dynamicObstacle1.pos.x+dynamicObstacle1.velocity+30>=800 || dynamicObstacle1.pos.x+dynamicObstacle1.velocity<=0)
 		dynamicObstacle1.velocity*=-1;
 	dynamicObstacle1.pos.x+=dynamicObstacle1.velocity;
-	
+	rect(dynamicObstacle2.pos.x,dynamicObstacle2.pos.y,30,30);
+	if(dynamicObstacle2.pos.x+dynamicObstacle2.velocity+30>=800 || dynamicObstacle2.pos.x+dynamicObstacle2.velocity<=0)
+		dynamicObstacle2.velocity*=-1;
+	dynamicObstacle2.pos.x+=dynamicObstacle2.velocity;
+	rect(dynamicObstacle3.pos.x,dynamicObstacle3.pos.y,30,30);
+	if(dynamicObstacle3.pos.x+dynamicObstacle3.velocity+30>=800 || dynamicObstacle3.pos.x+dynamicObstacle3.velocity<=0)
+		dynamicObstacle3.velocity*=-1;
+	dynamicObstacle3.pos.x+=dynamicObstacle3.velocity;
 	fill(0,255,0);
-	rect(target.x,target.y,10,10);
+	rect(target.x,target.y,80,80);
 	fill(255,100,0);
 	for(var i=0;i<populationSize;i++){
 		if(!population[i].dead){
@@ -218,10 +250,14 @@ function draw(){
 				temp.y=random(-speed,0);
 				population[i].gene.push(temp);
 			}
-			if(population[i].pos.x+population[i].gene[step].x<0 ||population[i].pos.x+population[i].gene[step].x>790 ||population[i].pos.y+population[i].gene[step].y>590|| population[i].pos.y+population[i].gene[step].y<0||collideRectRect(population[i].pos.x+population[i].gene[step].x,population[i].pos.y+population[i].gene[step].y,10,10,obstacle.x,obstacle.y,300,10)){
+			if(population[i].pos.x+population[i].gene[step].x<0 ||population[i].pos.x+population[i].gene[step].x>790 ||population[i].pos.y+population[i].gene[step].y>590|| population[i].pos.y+population[i].gene[step].y<0){
 				population[i].dead=true;
 				population[i].deadbyobstacle=true;
 			}
+			// else if(collideRectRect(population[i].pos.x+population[i].gene[step].x,population[i].pos.y+population[i].gene[step].y,10,10,obstacle.x,obstacle.y,300,10)){
+			// 	population[i].dead=true;
+			// 	population[i].deadbyobstacle=true;
+			// }
 			else if(collideRectRect(population[i].pos.x+population[i].gene[step].x,population[i].pos.y+population[i].gene[step].y,10,10,dynamicObstacle.pos.x+dynamicObstacle.velocity,dynamicObstacle.pos.y,30,30)){
 				console.log("hit");
 				population[i].dead=true;
@@ -232,6 +268,17 @@ function draw(){
 				population[i].dead=true;
 				population[i].deadbyobstacle=true;
 			}
+			else if(collideRectRect(population[i].pos.x+population[i].gene[step].x,population[i].pos.y+population[i].gene[step].y,10,10,dynamicObstacle2.pos.x+dynamicObstacle2.velocity,dynamicObstacle2.pos.y,30,30)){
+				console.log("hit")
+				population[i].dead=true;
+				population[i].deadbyobstacle=true;
+			}
+			else if(collideRectRect(population[i].pos.x+population[i].gene[step].x,population[i].pos.y+population[i].gene[step].y,10,10,dynamicObstacle3.pos.x+dynamicObstacle3.velocity,dynamicObstacle3.pos.y,30,30)){
+				console.log("hit")
+				population[i].dead=true;
+				population[i].deadbyobstacle=true;
+			}
+			
 			else
 				rect(population[i].pos.x+=population[i].gene[step].x,population[i].pos.y+=population[i].gene[step].y,10,10)
 		}
@@ -243,31 +290,39 @@ function draw(){
 			population[i].dead=true;
 		}
 	}
-	if(evaluate()){
+	var temp=evaluate();
+	if(temp[0]){
 		if(gamestatus==0){
+			wincount=temp[1];
+			console.log(temp[1]);
 			gamestatus=1;
-			target.x=width/2;
-			target.y=10;
+			// target.x=width/2;
+			// target.y=10;
 		}
-		else if(gamestatus==1){
-			gamestatus=2;
-		}
+		// else if(gamestatus==1){
+		// 	gamestatus=2;
+		// }
 	}
 	fill(255);
 	text("Best Score= "+bestScore,0,10);
 	text("Generations= "+generations,0,30);
 	text("speed= "+speed,0,50);
-	if(gamestatus==2){
+	text("Win count= "+wincount,0,70);
+	if(gamestatus==1){
 		fill(0,255,0);
-		text("Won",0,70);
+		text("Won",0,90);
+		gamestatus=0;
 	}
 	if(alldead()){
 		generations++;
-		hit=0;
-		dynamicObstacle1.pos.x=770;
-		dynamicObstacle1.pos.y=160;
 		dynamicObstacle.pos.x=0;
-		dynamicObstacle.pos.y=100;
+		dynamicObstacle.pos.y=140;
+		dynamicObstacle1.pos.x=770;
+		dynamicObstacle1.pos.y=240;
+		dynamicObstacle2.pos.x=0;
+		dynamicObstacle2.pos.y=340;
+		dynamicObstacle3.pos.x=770;
+		dynamicObstacle3.pos.y=440;
 		calculateFitness();	
 		findbest();
 		// console.log("Best Score= "+bestScore);
@@ -283,5 +338,4 @@ function draw(){
 			lifetime+=lifetimeincreasecount;
 		}
 	}
-
 }
