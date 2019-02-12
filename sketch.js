@@ -121,7 +121,7 @@ function crossover(parent){
 	child.pos.y=580;
 	child.gene=[];
 	// var midpoint=floor(parenta.gene.length/2);
-	for(var i=0;i<lifetime;i++){
+	for(var i=0;i<parent.gene.length;i++){
 		child.gene[i]=new Object();
 		// if(i>midpoint){
 		// 	child.gene[i].x=parenta.gene[i].x;
@@ -141,7 +141,7 @@ function crossover(parent){
 	// mutating the current neural network
 	child.brain.mutate();
 	// mutating child gene
-	for(var i=0;i<lifetime;i++){
+	for(var i=0;i<parent.gene.length;i++){
 		if(random(1)<mutationRate){
 			child.gene[i].x=random(-speed,speed);
 			child.gene[i].y=random(-speed,speed);
