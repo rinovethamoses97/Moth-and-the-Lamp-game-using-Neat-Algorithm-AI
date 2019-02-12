@@ -10,7 +10,7 @@ var mutationRate=0.01;
 var bestPopulation;
 var bestScore=0;
 var gamestatus=0;
-var speed=4;
+var speed=8;
 var lifetimeincreasecount=15;
 var wincount=0;
 var dynamicObstacle=new Object();
@@ -294,7 +294,6 @@ function draw(){
 	if(temp[0]){
 		if(gamestatus==0){
 			wincount=temp[1];
-			console.log(temp[1]);
 			gamestatus=1;
 			// target.x=width/2;
 			// target.y=10;
@@ -311,6 +310,9 @@ function draw(){
 	if(gamestatus==1){
 		fill(0,255,0);
 		text("Won",0,90);
+		if(wincount===populationSize){
+			alert("All Reached Distination");
+		}
 		gamestatus=0;
 	}
 	if(alldead()){
