@@ -166,15 +166,17 @@ function naturalSelection(){
 	// 	for(var j=0;j<score;j++)
 	// 		pool.push(population[i]);
 	// }
-	pool.sort(compare);
+	// pool.sort(compare);
 	for(var i=0;i<populationSize;i++){
 		// var rand=floor(random(0,pool.length/4));
 		// var parent=pool[rand];
 		// var rand=floor(random(0,pool.length/4));
 		// var parentb=pool[rand];
 		// var child=crossover(parenta,parentb);
-		var child=crossover(bestPopulation);
-		population[i]=child;		
+		if(!population[i].won){
+			var child=crossover(bestPopulation);
+			population[i]=child;		
+		}
 	}
 }
 function think(population){
@@ -281,13 +283,14 @@ function draw(){
 				population[i].deadbyobstacle=true;
 			}
 			
-			else
-				rect(population[i].pos.x+=population[i].gene[step].x,population[i].pos.y+=population[i].gene[step].y,10,10)
+			else{
+				if(!population[i].won)
+					rect(population[i].pos.x+=population[i].gene[step].x,population[i].pos.y+=population[i].gene[step].y,10,10)
+			}
 		}
 	}
 	if(step==lifetime-1){
 		step=0;
-		console.log(population[0].gene.length);
 		for(var i=0;i<populationSize;i++){
 			population[i].dead=true;
 		}
