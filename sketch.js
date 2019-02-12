@@ -1,4 +1,4 @@
-var populationSize=200;
+var populationSize=150;
 var population=[];
 var target=new Object();
 var obstacle=new Object();
@@ -10,7 +10,7 @@ var mutationRate=0.01;
 var bestPopulation;
 var bestScore=0;
 var gamestatus=0;
-var speed=5;
+var speed=4;
 var lifetimeincreasecount=15;
 var wincount=0;
 var dynamicObstacle=new Object();
