@@ -10,29 +10,30 @@ var mutationRate=0.01;
 var bestPopulation;
 var bestScore=0;
 var gamestatus=0;
-var speed=8;
+var speed=7;
+var obstaclevelocity=8;
 var lifetimeincreasecount=15;
 var wincount=0;
 var dynamicObstacle=new Object();
 dynamicObstacle.pos=new Object();
 dynamicObstacle.pos.x=0;
 dynamicObstacle.pos.y=140;
-dynamicObstacle.velocity=8;
+dynamicObstacle.velocity=obstaclevelocity;
 var dynamicObstacle1=new Object();
 dynamicObstacle1.pos=new Object();
 dynamicObstacle1.pos.x=770;
 dynamicObstacle1.pos.y=240;
-dynamicObstacle1.velocity=8;
+dynamicObstacle1.velocity=obstaclevelocity;
 var dynamicObstacle2=new Object();
 dynamicObstacle2.pos=new Object();
 dynamicObstacle2.pos.x=0;
 dynamicObstacle2.pos.y=340;
-dynamicObstacle2.velocity=8;
+dynamicObstacle2.velocity=obstaclevelocity;
 var dynamicObstacle3=new Object();
 dynamicObstacle3.pos=new Object();
 dynamicObstacle3.pos.x=770;
 dynamicObstacle3.pos.y=440;
-dynamicObstacle3.velocity=8;
+dynamicObstacle3.velocity=obstaclevelocity;
 function setup(){
 	createCanvas(800,600);
 	background(0);
@@ -71,7 +72,7 @@ function alldead(){
 function evaluate(){
 	var count=0;
 	for(var i=0;i<populationSize;i++){
-		if(collideRectRect(population[i].pos.x,population[i].pos.y,10,10,target.x,target.y,80,80)){
+		if(collideRectRect(population[i].pos.x,population[i].pos.y,10,10,target.x,target.y,100,80)){
 			count++;
 		}		
 	}
@@ -92,10 +93,10 @@ function calculateFitness(){
 		}
 		else{
 			if(population[i].won){
-				population[i].fitness=1/dist(population[i].pos.x,population[i].pos.y,target.x+40,target.y+40)*2;
+				population[i].fitness=1/dist(population[i].pos.x,population[i].pos.y,target.x+50,target.y+40)*2;
 			}
 			else
-				population[i].fitness=1/dist(population[i].pos.x,population[i].pos.y,target.x+40,target.y+40);
+				population[i].fitness=1/dist(population[i].pos.x,population[i].pos.y,target.x+50,target.y+40);
 		}
 	}
 }
@@ -221,7 +222,7 @@ function draw(){
 		dynamicObstacle3.velocity*=-1;
 	dynamicObstacle3.pos.x+=dynamicObstacle3.velocity;
 	fill(0,255,0);
-	rect(target.x,target.y,80,80);
+	rect(target.x,target.y,100,80);
 	fill(255,100,0);
 	for(var i=0;i<populationSize;i++){
 		if(!population[i].dead){
@@ -312,6 +313,7 @@ function draw(){
 		text("Won",0,90);
 		if(wincount===populationSize){
 			alert("All Reached Distination");
+			noLoop();
 		}
 		gamestatus=0;
 	}
