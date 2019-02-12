@@ -226,32 +226,32 @@ function draw(){
 	rect(target.x,target.y,100,80);
 	fill(255,100,0);
 	for(var i=0;i<populationSize;i++){
+		var outputs=think(population[i]);
+		if(outputs[0]>0.5){
+			var temp=new Object();
+			temp.x=random(0,speed);
+			temp.y=0;
+			population[i].gene.push(temp);
+		}
+		else{
+			var temp=new Object();
+			temp.x=random(-speed,0);
+			temp.y=0;
+			population[i].gene.push(temp);	
+		}
+		if(outputs[1]>0.5){
+			var temp=new Object();
+			temp.x=0;
+			temp.y=random(0,speed);
+			population[i].gene.push(temp);
+		}
+		else{
+			var temp=new Object();
+			temp.x=0;
+			temp.y=random(-speed,0);
+			population[i].gene.push(temp);
+		}
 		if(!population[i].dead){
-			var outputs=think(population[i]);
-			if(outputs[0]>0.5){
-				var temp=new Object();
-				temp.x=random(0,speed);
-				temp.y=0;
-				population[i].gene.push(temp);
-			}
-			else{
-				var temp=new Object();
-				temp.x=random(-speed,0);
-				temp.y=0;
-				population[i].gene.push(temp);	
-			}
-			if(outputs[1]>0.5){
-				var temp=new Object();
-				temp.x=0;
-				temp.y=random(0,speed);
-				population[i].gene.push(temp);
-			}
-			else{
-				var temp=new Object();
-				temp.x=0;
-				temp.y=random(-speed,0);
-				population[i].gene.push(temp);
-			}
 			if(population[i].pos.x+population[i].gene[step].x<0 ||population[i].pos.x+population[i].gene[step].x>790 ||population[i].pos.y+population[i].gene[step].y>590|| population[i].pos.y+population[i].gene[step].y<0){
 				population[i].dead=true;
 				population[i].deadbyobstacle=true;
@@ -285,13 +285,14 @@ function draw(){
 				rect(population[i].pos.x+=population[i].gene[step].x,population[i].pos.y+=population[i].gene[step].y,10,10)
 		}
 	}
-	step++;
 	if(step==lifetime-1){
 		step=0;
+		console.log(population[0].gene.length);
 		for(var i=0;i<populationSize;i++){
 			population[i].dead=true;
 		}
 	}
+	step++;
 	var temp=evaluate();
 	if(temp[0]){
 		if(gamestatus==0){
