@@ -205,7 +205,7 @@ function think(population){
 	return outputs;
 }
 function draw(){
-	frameRate(30);
+	frameRate(15);
 	background(0);
 	fill(0,0,255);
 	// rect(obstacle.x,obstacle.y,300,10);
