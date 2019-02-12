@@ -53,7 +53,7 @@ function setup(){
 		population[i].dead=false;
 		population[i].deadbyobstacle=false;
 		population[i].won=false;
-		population[i].brain=new NeuralNetwork(5,7,2);
+		population[i].brain=new NeuralNetwork(6,7,2);
 		for(var j=0;j<lifetime;j++){
 			population[i].gene[j]=new Object();
 			population[i].gene[j].x=random(-speed,speed)
@@ -197,14 +197,15 @@ function think(population){
 	inputs[0]=temp_x;
 	inputs[1]=temp_y;
 	// inputs[2]=temp_dist_to_obstacle;
-	// inputs[3]=1/dist(population.pos.x,population.pos.y,dynamicObstacle.pos.x,dynamicObstacle.pos.y);
-	inputs[2]=1/dist(population.pos.x,population.pos.y,dynamicObstacle1.pos.x,dynamicObstacle1.pos.y);
-	inputs[3]=1/dist(population.pos.x,population.pos.y,dynamicObstacle2.pos.x,dynamicObstacle2.pos.y);
-	inputs[4]=1/dist(population.pos.x,population.pos.y,dynamicObstacle3.pos.x,dynamicObstacle3.pos.y);
+	inputs[2]=1/dist(population.pos.x,population.pos.y,dynamicObstacle.pos.x,dynamicObstacle.pos.y);
+	inputs[3]=1/dist(population.pos.x,population.pos.y,dynamicObstacle1.pos.x,dynamicObstacle1.pos.y);
+	inputs[4]=1/dist(population.pos.x,population.pos.y,dynamicObstacle2.pos.x,dynamicObstacle2.pos.y);
+	inputs[5]=1/dist(population.pos.x,population.pos.y,dynamicObstacle3.pos.x,dynamicObstacle3.pos.y);
 	var outputs=population.brain.query(inputs);
 	return outputs;
 }
 function draw(){
+	frameRate(30);
 	background(0);
 	fill(0,0,255);
 	// rect(obstacle.x,obstacle.y,300,10);
