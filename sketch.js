@@ -73,6 +73,7 @@ function evaluate(){
 	var count=0;
 	for(var i=0;i<populationSize;i++){
 		if(collideRectRect(population[i].pos.x,population[i].pos.y,10,10,target.x,target.y,100,80)){
+			population[i].won=true;
 			count++;
 		}		
 	}
