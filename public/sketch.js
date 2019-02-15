@@ -42,7 +42,7 @@ function setup(){
 	background(0);
 	// target.x=700;
 	// target.y=height/2;
-	target.x=width/2;
+	target.x=width/2-50;
 	target.y=10;
 	// obstacle.x=240;
 	// obstacle.y=height/2;
@@ -112,10 +112,10 @@ function calculateFitness(){
 		}
 		else{
 			if(population[i].won){
-				population[i].fitness=1/dist(population[i].pos.x,population[i].pos.y,target.x+50,target.y+40)*2;
+				population[i].fitness=1/dist(population[i].pos.x,population[i].pos.y,target.x+50,target.y+80)*100;
 			}
 			else
-				population[i].fitness=1/dist(population[i].pos.x,population[i].pos.y,target.x+50,target.y+40);
+				population[i].fitness=1/dist(population[i].pos.x,population[i].pos.y,target.x+50,target.y+80);
 		}
 	}
 }
@@ -201,7 +201,7 @@ function think(population){
 	var inputs=[];
 	var temp_x=(population.pos.x-0)/(800-0);
 	var temp_y=(population.pos.y-0)/(800-0);
-	var temp_dist_to_target=1/(dist(population.pos.x,population.pos.y,target.x,target.y));
+	var temp_dist_to_target=1/(dist(population.pos.x,population.pos.y,target.x+50,target.y+80));
 	// var temp_dist_to_obstacle;
 	// if(population.pos.x>=240 && population.pos.x<=640 && population.pos.y>=(height/2)+10){
 	// 	temp_dist_to_obstacle=1/dist(population.pos.x,population.pos.y,population.pos.x,obstacle.y+10);
@@ -214,7 +214,6 @@ function think(population){
 	// }
 	inputs[0]=temp_x;
 	inputs[1]=temp_y;
-	// inputs[2]=temp_dist_to_obstacle;
 	inputs[2]=1/dist(population.pos.x,population.pos.y,dynamicObstacle.pos.x,dynamicObstacle.pos.y);
 	inputs[3]=1/dist(population.pos.x,population.pos.y,dynamicObstacle1.pos.x,dynamicObstacle1.pos.y);
 	inputs[4]=1/dist(population.pos.x,population.pos.y,dynamicObstacle2.pos.x,dynamicObstacle2.pos.y);
