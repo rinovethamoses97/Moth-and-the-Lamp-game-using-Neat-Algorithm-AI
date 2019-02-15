@@ -1,0 +1,23 @@
+{
+  "name": "moth_and_lamp_using_neat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rinovethamoses97/Moth-and-the-Lamp-game-using-Neat-Algorithm-AI.git"
+  },
+  "author": "Rino",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rinovethamoses97/Moth-and-the-Lamp-game-using-Neat-Algorithm-AI/issues"
+  },
+  "homepage": "https://github.com/rinovethamoses97/Moth-and-the-Lamp-game-using-Neat-Algorithm-AI#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.16.4"
+  }
+}
