@@ -17,6 +17,7 @@ var speed=7;
 var obstaclevelocity=8;
 var lifetimeincreasecount=15;
 var wincount=0;
+var showonlybestpopulation=false;
 var dynamicObstacle=new Object();
 dynamicObstacle.pos=new Object();
 dynamicObstacle.pos.x=0;
@@ -57,6 +58,7 @@ function setup(){
 		population[i].deadbyobstacle=false;
 		population[i].won=false;
 		population[i].brain=new NeuralNetwork(6,7,2);
+		population[i].best=false;
 		for(var j=0;j<lifetime;j++){
 			population[i].gene[j]=new Object();
 			population[i].gene[j].x=random(-speed,speed)
@@ -122,14 +124,17 @@ function calculateFitness(){
 function findbest(){
 	var temp_score=0;
 	var temp_population;
+	var temp_population_id;
 	for(var i=0;i<populationSize;i++){
 		if(population[i].fitness>temp_score){
 			temp_score=population[i].fitness;
 			temp_population=population[i];
+			temp_population_id=i;
 		}
 	}
 	bestPopulation=temp_population;
 	bestScore=temp_score;
+	population[temp_population_id].best=true;
 }
 function crossover(parent){
 	var child=new Object();
@@ -140,6 +145,7 @@ function crossover(parent){
 	child.pos.x=width/2-5;
 	child.pos.y=580;
 	child.gene=[];
+	child.best=false;
 	// var midpoint=floor(parenta.gene.length/2);
 	for(var i=0;i<parent.gene.length;i++){
 		child.gene[i]=new Object();
@@ -195,6 +201,11 @@ function naturalSelection(){
 			var child=crossover(bestPopulation);
 			population[i]=child;		
 		}
+	}
+}
+function keyPressed(key){
+	if(key.key=="p"){
+		showonlybestpopulation=!showonlybestpopulation;
 	}
 }
 function think(population){
@@ -301,9 +312,20 @@ function draw(){
 				population[i].deadbyobstacle=true;
 			}
 			
-			else{
-				if(!population[i].won)
-					rect(population[i].pos.x+=population[i].gene[step].x,population[i].pos.y+=population[i].gene[step].y,10,10)
+			else {
+				if(!population[i].won && !population[i].dead){
+					if(population[i].best){
+						fill(0,255,0);
+						rect(population[i].pos.x+population[i].gene[step].x,population[i].pos.y+population[i].gene[step].y,10,10)
+						population[i].best=false;
+					}
+					else if(!showonlybestpopulation){
+						fill(255,100,0);
+						rect(population[i].pos.x+population[i].gene[step].x,population[i].pos.y+population[i].gene[step].y,10,10)
+					}
+					population[i].pos.x+=population[i].gene[step].x;
+					population[i].pos.y+=population[i].gene[step].y;
+				}
 			}
 		}
 	}
