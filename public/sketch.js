@@ -51,7 +51,7 @@ function setup(){
 		population[i].fitness=0;
 		population[i].gene=[];
 		population[i].pos=new Object();
-		population[i].pos.x=400;
+		population[i].pos.x=width/2-5;
 		population[i].pos.y=580;
 		population[i].dead=false;
 		population[i].deadbyobstacle=false;
@@ -137,7 +137,7 @@ function crossover(parent){
 	child.deadbyobstacle=false;
 	child.fitness=0;
 	child.pos=new Object();
-	child.pos.x=400;
+	child.pos.x=width/2-5;
 	child.pos.y=580;
 	child.gene=[];
 	// var midpoint=floor(parenta.gene.length/2);
