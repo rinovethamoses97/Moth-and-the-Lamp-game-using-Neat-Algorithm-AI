@@ -354,6 +354,7 @@ function draw(){
 		dynamicObstacle3.pos.x=770;
 		dynamicObstacle3.pos.y=440;
 		// calculateFitness();	
+		// findbest();
 		// console.log("Best Score= "+bestScore);
 		naturalSelection();
 		if(generations%2==0){
@@ -375,7 +376,7 @@ function displayNeuralNetwork(){
 	for(var i=0;i<hiddennodes.length;i++){
 		hiddennodes[i].show();
 		for(var j=0;j<inputnodes.length;j++){
-			stroke(255);
+			stroke(157, 158, 160);
 			var temp_weight_value=map(bestPopulation.brain.wih.matrix[i][j],-1,1,1,4);
 			strokeWeight(temp_weight_value);
 			line(hiddennodes[i].x,hiddennodes[i].y,inputnodes[j].x,inputnodes[j].y);
@@ -384,7 +385,7 @@ function displayNeuralNetwork(){
 	for(var i=0;i<outputnodes.length;i++){
 		outputnodes[i].show();
 		for(var j=0;j<hiddennodes.length;j++){
-			stroke(255);
+			stroke(157, 158, 160);
 			var temp_weight_value=map(bestPopulation.brain.who.matrix[i][j],-1,1,1,4);
 			strokeWeight(temp_weight_value);
 			line(outputnodes[i].x,outputnodes[i].y,hiddennodes[j].x,hiddennodes[j].y);
@@ -392,4 +393,5 @@ function displayNeuralNetwork(){
 	}
 	stroke(0);
 	strokeWeight(1);
+	// noLoop();
 }

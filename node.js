@@ -5,6 +5,8 @@ class node{
         this.diameter=diameter;
     }
     show(){
+        fill(255);
+        stroke(255);
         ellipse(this.x,this.y,this.diameter,this.diameter);
     }
 }
